@@ -50,8 +50,9 @@
 #' @export
 #'
 #' @examples
-#' DistributionOptimization(c(rnorm(200),rnorm(200,3)), 2,Iter = 15)
-#'
+#' \dontrun{
+#' DistributionOptimization(c(rnorm(200),rnorm(200,3), 2))
+#' }
 DistributionOptimization <- function(Data, Modes, Monitor = 1, SelectionMethod="UnbiasedTournament",
                                      MutationMethod="Uniform+Focused",
                                     CrossoverMethod="WholeArithmetic",
@@ -662,7 +663,9 @@ DistributionOptimization <- function(Data, Modes, Monitor = 1, SelectionMethod="
              else sortedCustomPopulation(...)},
            elitism = base::max(1, round(PopulationSize*Elitism)),
            optim=Optim,
-           pcrossover = CrossoverRate)},
+           pcrossover = CrossoverRate,
+            parallel=F)
+          },
   interrupt = function(x) print("interrupted"),
   finally = {})
 

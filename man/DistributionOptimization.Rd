@@ -69,8 +69,9 @@ Fits a Gaussian Mixture Model onto a Dataset by minimizing a fitting error throu
 Details over the evolutionary process itself can be taken from the 'GA' package. \link[GA]{ga}
 }
 \examples{
-DistributionOptimization(c(rnorm(200),rnorm(200,3)), 2,Iter = 15)
-
+\dontrun{
+DistributionOptimization(c(rnorm(200),rnorm(200,3), 2))
+}
 }
 \author{
 Florian Lerch

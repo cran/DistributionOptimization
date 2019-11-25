@@ -1,12 +1,12 @@
-b8d3ffb062f5d262a403766b4769b2d2 *DESCRIPTION
+f0800eb0edcec8ec0d2a2210af017308 *DESCRIPTION
 dec8937c79c8aef27f0d982355664a3b *LICENSE
 6e03e9c77119d5fef65692d3b9c225e9 *NAMESPACE
 7449b1a83b795485bda2f56d92c34aec *R/BinProb4Mixtures.R
-bd0c438aa64c75fbd3ea437735292261 *R/DistributionOptimization.R
+f1b705df698b158e045ca50d9ba6c122 *R/DistributionOptimization.R
 a2b9e6dacbec4d2335fa31cb83a2ba44 *R/MixedDistributionError.R
 ad70254a2d66c06c75cc23b1dbbaffd3 *R/OverlapErrorByDensity.R
 fd9667035fde3ce170882ae3e9401bd9 *man/BinProb4Mixtures.Rd
 672dd0baf8522710efea7ac8a4fe5bf7 *man/DistributionOptimization-package.Rd
-d7de2c3c2b1f54f9f538f4cb84c84167 *man/DistributionOptimization.Rd
+36ddbef829a16678fa28ccddffbacf46 *man/DistributionOptimization.Rd
 9ed69ac96ded4a3eec8da5673524c37a *man/MixedDistributionError.Rd
 75868401de78d459578a8109ae348939 *man/OverlapErrorByDensity.Rd
