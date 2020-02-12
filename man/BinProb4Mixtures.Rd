@@ -27,9 +27,8 @@ Probabalities of either c-1 or c+1 bins/intervals (depending on LimitsAreFinite)
 Calculates the probability of bins/intervals within the dataspace defined by given breaks between them.
 }
 \examples{
- 
 Data = c(rnorm(50,1,2), rnorm(50,3,4))
-NoBins = AdaptGauss::OptimalNoBins(Data)
+NoBins = 20
 breaks = seq(min(Data),max(Data), length.out=length(NoBins)+1)
 BinProb4Mixtures(c(1,3), c(2,4), c(0.5,0.5), breaks)
 }

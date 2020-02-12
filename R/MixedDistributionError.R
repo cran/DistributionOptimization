@@ -15,6 +15,7 @@
 #' @author Florian Lerch
 #'
 #' @import AdaptGauss
+#' @importFrom stats "quantile" "sd"
 #' @export
 #' @examples
 #' Data = c(rnorm(50,1,2), rnorm(50,3,4))
@@ -23,17 +24,26 @@
 MixedDistributionError <- function(Means, SDs, Weights, Data, rho = 0.5, breaks = NULL, Kernels = NULL, ErrorMethod = "chisquare"){
   if(!is.vector(Data)) stop("Data is not a vector")
 
-  NoBins = OptimalNoBins(Data)
+  # no of bins
+  iqr = quantile(Data, 0.75) - quantile(Data, 0.25)
+  obw = 3.49 * (min(sd(Data), iqr/1.349) / nrow(Data)^(1/3))
+  NoBins = max((max(Data) - min(Data)) / obw, 10)
 
   if(is.null(breaks)) breaks = seq(min(Data),max(Data), length.out=length(NoBins)+1)
-  if(is.null(Kernels)){
-    V = ParetoDensityEstimation(Data)
-    kernels = V$kernels
-    paretoDensity = V$paretoDensity
-  }
+  if(is.null(Kernels)) Kernels = as.vector(seq(min(Data), max(Data), length.out = NoBins))
+
+  distvec = (stats::dist(as.matrix(Data)))
+  ParetoRad = quantile(distvec, 18/100, na.rm = TRUE)
+  ParetoRad = ParetoRad * 4 / length(Data)^0.2
+
+  # density
+  inRad = sapply(Kernels, function(k)   (Data >= (k - ParetoRad)) & (Data <= (k + ParetoRad)))
+  nrInRad = as.vector(colSums(inRad))
+  normv = pracma::trapz(Kernels, nrInRad)
+  paretoDensity = nrInRad / normv
 
   if(ErrorMethod == "pdeerror"){
-    V = Pdf4Mixtures(kernels, Means, SDs, Weights)
+    V = Pdf4Mixtures(Kernels, Means, SDs, Weights)
     SimilarityError = sum(abs(V$PDFmixture - paretoDensity))
   }
   else if(ErrorMethod == "chisquare"){

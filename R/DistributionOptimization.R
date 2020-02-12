@@ -44,7 +44,7 @@
 #' @import AdaptGauss
 #' @import ggplot2
 #' @importFrom graphics "hist" "lines" "par" "plot.new" "text"
-#' @importFrom stats "dnorm" "ecdf" "rnorm" "runif"
+#' @importFrom stats "dnorm" "ecdf" "rnorm" "runif" "quantile" "sd"
 #' @importFrom utils "head" "tail"
 #'
 #' @export
@@ -87,11 +87,25 @@ DistributionOptimization <- function(Data, Modes, Monitor = 1, SelectionMethod="
   ##############
   # Vorberechnungen (notwendig fuer die Berechnung der Fehler (=> Fitness))
   ##############
-  if(is.null(ParetoRad)) ParetoRad = ParetoRadius(Data, maximumNrSamples = 5000)
-  V = ParetoDensityEstimation(Data, paretoRadius = ParetoRad)
-  kernels = V$kernels
-  paretoDensity = V$paretoDensity
-  if(is.null(NoBins)) NoBins = OptimalNoBins(Data)
+
+  if(is.null(ParetoRad)){
+    distvec = (stats::dist(as.matrix(Data)))
+    ParetoRad = quantile(distvec, 18/100, na.rm = TRUE)
+    ParetoRad = ParetoRad * 4 / length(Data)^0.2
+  }
+
+  # no of bins
+  iqr = quantile(Data, 0.75) - quantile(Data, 0.25)
+  obw = 3.49 * (min(sd(Data), iqr/1.349) / nrow(Data)^(1/3))
+  if(is.null(NoBins)) NoBins = max((max(Data) - min(Data)) / obw, 10)
+
+  # density
+  kernels = as.vector(seq(min(Data), max(Data), length.out = NoBins))
+  inRad = sapply(kernels, function(k)   (Data >= (k - ParetoRad)) & (Data <= (k + ParetoRad)))
+  nrInRad = as.vector(colSums(inRad))
+  normv = pracma::trapz(kernels, nrInRad)
+  paretoDensity = nrInRad / normv
+
   breaks = seq(min(Data), max(Data), length.out = NoBins+1)
   empiricalCdf = ecdf(Data)(kernels)
   observedBins = hist(Data, breaks=breaks, plot = F)$counts

@@ -15,7 +15,6 @@
 #' OverlapError    Error for estimating the maximal Overlap of AUC of PDFs of each pair of GMM Components
 #' Kernels         Kernels that were used for comparing the GMM Components
 #' @author Florian Lerch
-#' @importFrom AdaptGauss OptimalNoBins
 #' @export
 #' @examples
 #' Data = c(rnorm(50,1,2), rnorm(50,3,4))
@@ -45,7 +44,14 @@ OverlapErrorByDensity <- function(Means, SDs, Weights, Data=NULL, Kernels=NULL){
     if(length(Kernels == 1)) stop("OverlapErrorDensity: if Data is not given, Kernels need to specify positions in the dataspace in form of a vector")
   }
 
-  if(is.null(Kernels)) Kernels = OptimalNoBins(Data)
+  if(is.null(Kernels)){
+    # no of bins
+    iqr = quantile(Data, 0.75) - quantile(Data, 0.25)
+    obw = 3.49 * (min(sd(Data), iqr/1.349) / nrow(Data)^(1/3))
+    max((max(Data) - min(Data)) / obw, 10)
+    Kernels = max((max(Data) - min(Data)) / obw, 10)
+  }
+
   if(length(Kernels) == 1) Kernels = seq(min(Data), max(Data), length.out = Kernels)
 
   # lade densities fuer alle Moden an allen Positionen (Kernels)
